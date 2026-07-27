@@ -69,14 +69,14 @@ const SuccessPage = () => {
         
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           <button onClick={handleHome} className="btn btn-outline" style={{ flex: '1', minWidth: '200px' }}>
-            <ArrowLeft size={18} style={{ marginRight: '0.5rem' }} />
+            <ArrowLeft size={20} strokeWidth={2.5} style={{ marginRight: '0.5rem' }} />
             Kembali ke Beranda
           </button>
           
           {showNextSurveyButton && (
             <button onClick={handleNextSurvey} className="btn btn-primary" style={{ flex: '1', minWidth: '200px' }}>
               {nextSurveyTitle}
-              <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
+              <ArrowRight size={20} strokeWidth={2.5} style={{ marginLeft: '0.5rem' }} />
             </button>
           )}
         </div>
