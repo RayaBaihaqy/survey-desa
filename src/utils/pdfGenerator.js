@@ -54,6 +54,10 @@ const generatePDF = async (data) => {
   // Info & Identitas Table (Left Column)
   const namaKuesioner = isKepuasan ? 'Survey Kepuasan Masyarakat 2026' : 'Survey Perilaku Masyarakat Terhadap Gratifikasi 2026';
   
+  const today = new Date();
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const formattedDate = today.toLocaleDateString('id-ID', options);
+  
   leftHtml += `
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10px; border: 1px solid black;">
         <tr>
@@ -66,7 +70,7 @@ const generatePDF = async (data) => {
         </tr>
         <tr>
           <td colspan="2" style="border: 1px solid black; padding: 4px; font-weight: bold;">Tanggal</td>
-          <td style="border: 1px solid black; padding: 4px;"></td>
+          <td style="border: 1px solid black; padding: 4px;">${formattedDate}</td>
         </tr>
         <tr>
           <th colspan="3" style="border: 1px solid black; padding: 5px; background-color: #f0f0f0; text-align: center; font-size: 11px;">IDENTITAS RESPONDEN</th>

@@ -66,7 +66,7 @@ const SurveyPage = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       localStorage.removeItem('survey_identitas');
-      navigate('/success');
+      navigate('/success', { state: { completedSurvey: surveyType, identitas } });
     } catch (error) {
       console.error('Error submitting survey:', error);
       alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
