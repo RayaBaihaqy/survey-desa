@@ -84,6 +84,14 @@ const generatePDF = async (data) => {
 
   currentIdentitasFields.forEach((field, index) => {
     let value = identitas[field.id] || '-';
+    
+    if (field.id === 'umur' && value !== '-') {
+      // Pastikan tidak dobel "tahun" kalau user kebetulan masukin string
+      if (!value.toString().toLowerCase().includes('tahun')) {
+        value = `${value} tahun`;
+      }
+    }
+    
     if (field.id === 'jk') {
        const isLaki = value === 'Laki-laki';
        const isPerempuan = value === 'Perempuan';
