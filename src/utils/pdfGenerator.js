@@ -231,7 +231,11 @@ const generatePDF = async (data) => {
     // Height = 210 - Top - Bottom = 210 - 15 = 195
     pdf.addImage(imgData, 'JPEG', 5, 10, 287, 195);
     
-    pdf.save('Hasil_Survey_Ngampel_Wetan.pdf');
+    const typeLabel = isKepuasan ? 'Kepuasan' : 'Gratifikasi';
+    const userName = identitas.nama ? identitas.nama.trim().replace(/\s+/g, '_') : 'Anonim';
+    const fileName = `Survey_${typeLabel}_${userName}.pdf`;
+    
+    pdf.save(fileName);
     const base64String = pdf.output('datauristring');
     
     document.body.removeChild(container);
