@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import { SURVEY_TYPES } from '../data/questions';
@@ -5,9 +6,23 @@ import { SURVEY_TYPES } from '../data/questions';
 const SuccessPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [completedList, setCompletedList] = useState([]);
   
   const completedSurvey = location.state?.completedSurvey;
   const identitas = location.state?.identitas;
+
+  useEffect(() => {
+    if (completedSurvey) {
+      let completed = JSON.parse(sessionStorage.getItem('completed_surveys') || '[]');
+      if (!completed.includes(completedSurvey)) {
+        completed.push(completedSurvey);
+        sessionStorage.setItem('completed_surveys', JSON.stringify(completed));
+      }
+      setCompletedList(completed);
+    } else {
+      setCompletedList(JSON.parse(sessionStorage.getItem('completed_surveys') || '[]'));
+    }
+  }, [completedSurvey]);
 
   let nextSurveyType = null;
   let nextSurveyTitle = 'Lanjut Survey Lainnya';
@@ -19,6 +34,8 @@ const SuccessPage = () => {
     nextSurveyType = SURVEY_TYPES.KEPUASAN;
     nextSurveyTitle = 'Lanjut Survey Kepuasan Masyarakat';
   }
+
+  const showNextSurveyButton = nextSurveyType && !completedList.includes(nextSurveyType);
 
   const handleNextSurvey = () => {
     if (nextSurveyType) {
@@ -33,6 +50,7 @@ const SuccessPage = () => {
   };
 
   const handleHome = () => {
+    sessionStorage.removeItem('completed_surveys');
     navigate('/');
   };
 
@@ -55,7 +73,7 @@ const SuccessPage = () => {
             Kembali ke Beranda
           </button>
           
-          {nextSurveyType && (
+          {showNextSurveyButton && (
             <button onClick={handleNextSurvey} className="btn btn-primary" style={{ flex: '1', minWidth: '200px' }}>
               {nextSurveyTitle}
               <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
