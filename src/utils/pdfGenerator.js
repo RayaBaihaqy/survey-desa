@@ -29,21 +29,21 @@ const generatePDF = async (data) => {
     <div style="flex: 1; display: flex; flex-direction: column; height: 100%;">
       
       <!-- Header -->
-      <div style="display: flex; align-items: center; border-bottom: 2px solid black; padding-bottom: 8px; margin-bottom: 10px;">
+      <div style="display: flex; align-items: center; border-bottom: 2px solid black; padding-bottom: 8px; margin-bottom: 10px; height: 90px; box-sizing: border-box;">
         <div style="width: 70px; text-align: center;">
           <img src="${logoKendal}" style="width: 55px; height: auto;" crossorigin="anonymous" />
         </div>
         <div style="flex-grow: 1; text-align: center;">
-          <h2 style="margin: 0; font-size: 16px; font-weight: normal;">PEMERINTAH KABUPATEN KENDAL</h2>
-          <h1 style="margin: 2px 0; font-size: 20px; font-weight: bold; letter-spacing: 1px;">KECAMATAN NGAMPEL</h1>
-          <p style="margin: 0; font-size: 10px;">Jl. Sunan Ampel KM. 2 Ngampel, 087832456444, 087700374714</p>
-          <p style="margin: 0; font-size: 10px;">Email: pemdesngampelwetan@gmail.com Website ngampelwetan.kendalkab.go.id</p>
+          <h2 style="margin: 0; font-size: 16px; font-weight: normal; line-height: 1.2;">PEMERINTAH KABUPATEN KENDAL</h2>
+          <h1 style="margin: 2px 0; font-size: 20px; font-weight: bold; letter-spacing: 1px; line-height: 1.2;">KECAMATAN NGAMPEL</h1>
+          <p style="margin: 0; font-size: 10px; line-height: 1.2;">Jl. Sunan Ampel KM. 2 Ngampel, 087832456444, 087700374714</p>
+          <p style="margin: 0; font-size: 10px; line-height: 1.2;">Email: pemdesngampelwetan@gmail.com Website ngampelwetan.kendalkab.go.id</p>
         </div>
       </div>
 
       <!-- Title -->
-      <div style="text-align: center; margin-bottom: 12px;">
-        <h3 style="margin: 0; font-size: 11px; font-weight: bold;">
+      <div style="text-align: center; margin-bottom: 12px; height: 40px; display: flex; align-items: center; justify-content: center;">
+        <h3 style="margin: 0; font-size: 11px; font-weight: bold; line-height: 1.3;">
           ${isKepuasan 
             ? 'KUESIONER SURVEY KEPUASAN MASYARAKAT<br/>PELAYANAN UMUM DESA NGAMPEL WETAN KECAMATAN NGAMPEL' 
             : 'KUESIONER SURVEY PERILAKU MASYARAKAT TERHADAP GRATIFIKASI<br/>DESA NGAMPEL WETAN KECAMATAN NGAMPEL'}
