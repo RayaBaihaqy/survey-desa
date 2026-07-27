@@ -12,10 +12,10 @@ const generatePDF = async (data) => {
   container.style.position = 'absolute';
   container.style.left = '-9999px';
   container.style.top = '0';
-  
+
   // A4 Landscape is approx 1123px width x 794px height (at 96 DPI)
   container.style.width = '1123px';
-  container.style.height = '794px'; 
+  container.style.height = '794px';
   container.style.backgroundColor = '#ffffff';
   container.style.padding = '25px 35px'; // slightly smaller padding to maximize space
   container.style.boxSizing = 'border-box';
@@ -44,20 +44,20 @@ const generatePDF = async (data) => {
       <!-- Title -->
       <div style="text-align: center; margin-bottom: 12px; height: 40px; display: flex; align-items: center; justify-content: center;">
         <h3 style="margin: 0; font-size: 11px; font-weight: bold; line-height: 1.3;">
-          ${isKepuasan 
-            ? 'KUESIONER SURVEY KEPUASAN MASYARAKAT<br/>PELAYANAN UMUM DESA NGAMPEL WETAN KECAMATAN NGAMPEL' 
-            : 'KUESIONER SURVEY PERILAKU MASYARAKAT TERHADAP GRATIFIKASI<br/>DESA NGAMPEL WETAN KECAMATAN NGAMPEL'}
+          ${isKepuasan
+      ? 'KUESIONER SURVEY KEPUASAN MASYARAKAT<br/>PELAYANAN UMUM DESA NGAMPEL WETAN KECAMATAN NGAMPEL'
+      : 'KUESIONER SURVEY PERILAKU MASYARAKAT TERHADAP GRATIFIKASI<br/>DESA NGAMPEL WETAN KECAMATAN NGAMPEL'}
         </h3>
       </div>
   `;
 
   // Info & Identitas Table (Left Column)
   const namaKuesioner = isKepuasan ? 'Survey Kepuasan Masyarakat 2026' : 'Survey Perilaku Masyarakat Terhadap Gratifikasi 2026';
-  
+
   const today = new Date();
   const options = { day: '2-digit', month: 'long', year: 'numeric' };
   const formattedDate = today.toLocaleDateString('id-ID', options);
-  
+
   leftHtml += `
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10px; border: 1px solid black;">
         <tr>
@@ -84,18 +84,18 @@ const generatePDF = async (data) => {
 
   currentIdentitasFields.forEach((field, index) => {
     let value = identitas[field.id] || '-';
-    
+
     if (field.id === 'umur' && value !== '-') {
       // Pastikan tidak dobel "tahun" kalau user kebetulan masukin string
-      if (!value.toString().toLowerCase().includes('tahun')) {
-        value = `${value} tahun`;
+      if (!value.toString().toLowerCase().includes('Tahun')) {
+        value = `${value} Tahun`;
       }
     }
-    
+
     if (field.id === 'jk') {
-       const isLaki = value === 'Laki-laki';
-       const isPerempuan = value === 'Perempuan';
-       value = `
+      const isLaki = value === 'Laki-laki';
+      const isPerempuan = value === 'Perempuan';
+      value = `
          <div style="display: flex; gap: 15px;">
            <div>${isLaki ? '☑' : '☐'} Laki-laki</div>
            <div>${isPerempuan ? '☑' : '☐'} Perempuan</div>
@@ -138,7 +138,7 @@ const generatePDF = async (data) => {
         ${q.kinerja.map(opt => `<div>${kinerjaChecked(opt)} ${opt}</div>`).join('')}
       </div>
     `;
-    
+
     let kepentinganHtml = '';
     if (isKepuasan) {
       if (q.kepentingan) {
@@ -166,7 +166,7 @@ const generatePDF = async (data) => {
   };
 
   // Questions Table (Left Column)
-  const thHeaders = isKepuasan 
+  const thHeaders = isKepuasan
     ? `<th style="border: 1px solid black; padding: 5px; width: 30%;">Kinerja/Kenyataannya</th><th style="border: 1px solid black; padding: 5px; width: 30%;">Tingkat Kepentingan</th>`
     : `<th style="border: 1px solid black; padding: 5px; width: 60%;">Kinerja/Kenyataannya</th>`;
 
@@ -216,14 +216,14 @@ const generatePDF = async (data) => {
   document.body.appendChild(container);
 
   try {
-    const canvas = await html2canvas(container, { 
+    const canvas = await html2canvas(container, {
       scale: 2, // High resolution
       useCORS: true,
       logging: false,
       width: 1123,
       height: 794
     });
-    
+
     // Create A4 Landscape PDF directly
     const pdf = new jsPDF({
       orientation: 'landscape',
@@ -232,20 +232,20 @@ const generatePDF = async (data) => {
     });
 
     const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    
+
     // Margins (in mm)
     // Top: 10, Bottom: 5, Left: 5, Right: 5
     // Width = 297 - Left - Right = 297 - 10 = 287
     // Height = 210 - Top - Bottom = 210 - 15 = 195
     pdf.addImage(imgData, 'JPEG', 5, 10, 287, 195);
-    
+
     const typeLabel = isKepuasan ? 'Kepuasan' : 'Gratifikasi';
     const userName = identitas.nama ? identitas.nama.trim().replace(/\s+/g, '_') : 'Anonim';
     const fileName = `Survey_${typeLabel}_${userName}.pdf`;
-    
+
     pdf.save(fileName);
     const base64String = pdf.output('datauristring');
-    
+
     document.body.removeChild(container);
     return base64String;
   } catch (error) {
