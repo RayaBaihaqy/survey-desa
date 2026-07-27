@@ -77,8 +77,8 @@ const SurveyPage = () => {
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ fontWeight: '600', color: 'var(--color-primary)' }}>
+      <div style={{ textAlign: 'center', marginBottom: 'clamp(1rem, 3vw, 2rem)' }}>
+        <h2 style={{ fontWeight: '600', color: 'var(--color-primary)', fontSize: 'clamp(1.1rem, 3.5vw, 1.5rem)' }}>
           {surveyType === SURVEY_TYPES.KEPUASAN ? 'Kuesioner Kepuasan Masyarakat' : 'Kuesioner Perilaku Gratifikasi'}
         </h2>
       </div>
@@ -138,19 +138,19 @@ const SurveyPage = () => {
           </div>
         ))}
 
-        <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button type="button" onClick={() => navigate(-1)} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem' }}>
-            <ArrowLeft size={20} style={{ marginRight: '0.75rem' }} /> Kembali
+        <div style={{ marginTop: 'clamp(1.5rem, 4vw, 3rem)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <button type="button" onClick={() => navigate(-1)} className="btn btn-outline" style={{ padding: '0.75rem 1.25rem', fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)' }}>
+            <ArrowLeft size={20} style={{ marginRight: '0.5rem' }} /> Kembali
           </button>
 
           <button 
             type="submit" 
             className="btn btn-primary" 
-            style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}
+            style={{ fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)', padding: '0.75rem 1.25rem' }}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Mengirim Data...' : (
-              <>Kirim Jawaban <Send size={20} style={{ marginLeft: '0.75rem' }} /></>
+              <>Kirim Jawaban <Send size={20} style={{ marginLeft: '0.5rem' }} /></>
             )}
           </button>
         </div>

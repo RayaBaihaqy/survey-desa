@@ -10,13 +10,13 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
+    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(1rem, 4vw, 2rem)', alignItems: 'center' }}>
       <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>Selamat Datang</h1>
-        <p style={{ color: 'var(--color-text-muted)' }}>Silakan pilih jenis survey yang ingin Anda isi.</p>
+        <h1 style={{ fontSize: 'clamp(1.4rem, 5vw, 2rem)', fontWeight: '700', marginBottom: '0.5rem' }}>Selamat Datang</h1>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: 'clamp(0.875rem, 3vw, 1rem)' }}>Silakan pilih jenis survey yang ingin Anda isi.</p>
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center', width: '100%', maxWidth: '900px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'clamp(1.5rem, 4vw, 3rem)', justifyContent: 'center', width: '100%', maxWidth: '900px', padding: '0 0.5rem' }}>
         {/* Card 1: Kepuasan Masyarakat */}
         <div className="blob-card" onClick={() => handleSelectSurvey(SURVEY_TYPES.KEPUASAN)}>
           <div className="bg"></div>

@@ -12,19 +12,30 @@ const LayoutWrapper = ({ children }) => {
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
 
+  // Scroll to top on every route change
   useEffect(() => {
-    if (isLandingPage) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const applyOverflow = () => {
+      if (isLandingPage && window.innerWidth > 768) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    };
+
+    applyOverflow();
+    window.addEventListener('resize', applyOverflow);
     return () => {
       document.body.style.overflow = 'auto';
-    }
+      window.removeEventListener('resize', applyOverflow);
+    };
   }, [isLandingPage]);
 
   return (
-    <div className="bg-pattern min-h-screen" style={{ display: 'flex', flexDirection: 'column', height: isLandingPage ? '100vh' : 'auto' }}>
+    <div className="bg-pattern min-h-screen" style={{ display: 'flex', flexDirection: 'column', minHeight: isLandingPage ? '100dvh' : 'auto' }}>
       {/* Navbar */}
       <nav className="navbar">
         <div className="container navbar-content">
@@ -36,7 +47,7 @@ const LayoutWrapper = ({ children }) => {
       </nav>
 
       {/* Main Content Area */}
-      <main className="container" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', paddingTop: isLandingPage ? '0' : '3rem', paddingBottom: isLandingPage ? '2rem' : '3rem', justifyContent: isLandingPage ? 'center' : 'flex-start' }}>
+      <main className="container" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', paddingTop: isLandingPage ? '1.5rem' : 'clamp(1.5rem, 4vw, 3rem)', paddingBottom: isLandingPage ? '2rem' : 'clamp(1.5rem, 4vw, 3rem)', justifyContent: isLandingPage ? 'center' : 'flex-start' }}>
         {children}
       </main>
     </div>

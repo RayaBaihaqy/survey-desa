@@ -20,7 +20,7 @@ const IdentitasPage = () => {
   };
 
   return (
-    <div className="animate-fade-in" style={{ padding: '2rem 1rem' }}>
+    <div className="animate-fade-in" style={{ padding: 'clamp(1rem, 3vw, 2rem) 0' }}>
       <form className="neo-form" onSubmit={handleSubmit}>
         <p>
           Selamat Datang,
