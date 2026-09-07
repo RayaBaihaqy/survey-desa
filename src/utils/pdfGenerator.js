@@ -51,12 +51,33 @@ const generatePDF = async (data) => {
       </div>
   `;
 
-  // Info & Identitas Table (Left Column)
-  const namaKuesioner = isKepuasan ? 'Survey Kepuasan Masyarakat 2026' : 'Survey Perilaku Masyarakat Terhadap Gratifikasi 2026';
+  // Sanitize helper to prevent HTML injection / broken layout
+  const escapeHtml = (str) => {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
 
+  // Dynamic Date, Year, and Semester Calculation
   const today = new Date();
-  const options = { day: '2-digit', month: 'long', year: 'numeric' };
-  const formattedDate = today.toLocaleDateString('id-ID', options);
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth(); // 0 = Jan, 5 = Jun
+  const isSemester1 = currentMonth < 6;
+  const semesterLabel = isSemester1 ? 'Semester I' : 'Semester II';
+  const semesterDates = isSemester1
+    ? `01 Januari ${currentYear} s/d 30 Juni ${currentYear}`
+    : `01 Juli ${currentYear} s/d 31 Desember ${currentYear}`;
+  const periodeString = `Tahun ${currentYear} (${semesterLabel}) (${semesterDates})`;
+  const namaKuesioner = isKepuasan
+    ? `Survey Kepuasan Masyarakat ${currentYear}`
+    : `Survey Perilaku Masyarakat Terhadap Gratifikasi ${currentYear}`;
+
+  const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+  const formattedDate = today.toLocaleDateString('id-ID', dateOptions);
 
   leftHtml += `
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10px; border: 1px solid black;">
@@ -66,7 +87,7 @@ const generatePDF = async (data) => {
         </tr>
         <tr>
           <td colspan="2" style="border: 1px solid black; padding: 4px; font-weight: bold;">Periode</td>
-          <td style="border: 1px solid black; padding: 4px;">Tahun 2026 (Semester I) (01 Januari 2026 s/d 30 Juni 2026)</td>
+          <td style="border: 1px solid black; padding: 4px;">${periodeString}</td>
         </tr>
         <tr>
           <td colspan="2" style="border: 1px solid black; padding: 4px; font-weight: bold;">Tanggal</td>
@@ -83,11 +104,12 @@ const generatePDF = async (data) => {
     : IDENTITAS_FIELDS.filter(f => ['nama', 'umur', 'jk', 'alamat'].includes(f.id));
 
   currentIdentitasFields.forEach((field, index) => {
-    let value = identitas[field.id] || '-';
+    let rawValue = identitas[field.id];
+    let value = rawValue != null && String(rawValue).trim() !== '' ? rawValue : '-';
 
     if (field.id === 'umur' && value !== '-') {
       // Pastikan tidak dobel "tahun" kalau user kebetulan masukin string
-      if (!value.toString().toLowerCase().includes('Tahun')) {
+      if (!String(value).toLowerCase().includes('tahun')) {
         value = `${value} Tahun`;
       }
     }
@@ -101,12 +123,14 @@ const generatePDF = async (data) => {
            <div>${isPerempuan ? '☑' : '☐'} Perempuan</div>
          </div>
        `;
+    } else {
+      value = escapeHtml(value);
     }
 
     leftHtml += `
         <tr>
           <td style="border: 1px solid black; padding: 4px; text-align: center; width: 20px;">${index + 1}.</td>
-          <td style="border: 1px solid black; padding: 4px; width: 100px;">${field.label}</td>
+          <td style="border: 1px solid black; padding: 4px; width: 100px;">${escapeHtml(field.label)}</td>
           <td style="border: 1px solid black; padding: 4px;">${value}</td>
         </tr>
     `;
@@ -114,7 +138,7 @@ const generatePDF = async (data) => {
   leftHtml += `</table>`;
 
   // Function to render a single question row
-  const renderQuestionRow = (q, index, isFirstRow) => {
+  const renderQuestionRow = (q, index) => {
     const ans = answers[q.id] || {};
     const kinerjaChecked = (opt) => ans.kinerja === opt ? '☑' : '☐';
     const kepentinganChecked = (opt) => ans.kepentingan === opt ? '☑' : '☐';
@@ -123,10 +147,10 @@ const generatePDF = async (data) => {
     if (isKepuasan && q.id === 'pungli') {
       return `
         <tr>
-          <td colspan="2" style="border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 10px; line-height: 1.2;">${q.pertanyaan}</td>
+          <td colspan="2" style="border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 10px; line-height: 1.2;">${escapeHtml(q.pertanyaan)}</td>
           <td colspan="2" style="border: 1px solid black; padding: 4px; vertical-align: middle;">
             <div style="display: flex; gap: 30px; font-size: 10px; padding-left: 10px;">
-              ${q.kinerja.map(opt => `<div>${kinerjaChecked(opt)} ${opt}</div>`).join('')}
+              ${q.kinerja.map(opt => `<div>${kinerjaChecked(opt)} ${escapeHtml(opt)}</div>`).join('')}
             </div>
           </td>
         </tr>
@@ -135,7 +159,7 @@ const generatePDF = async (data) => {
 
     const kinerjaHtml = `
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px;">
-        ${q.kinerja.map(opt => `<div>${kinerjaChecked(opt)} ${opt}</div>`).join('')}
+        ${q.kinerja.map(opt => `<div>${kinerjaChecked(opt)} ${escapeHtml(opt)}</div>`).join('')}
       </div>
     `;
 
@@ -145,7 +169,7 @@ const generatePDF = async (data) => {
         kepentinganHtml = `
           <td style="border: 1px solid black; padding: 4px; vertical-align: top;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px;">
-              ${q.kepentingan.map(opt => `<div>${kepentinganChecked(opt)} ${opt}</div>`).join('')}
+              ${q.kepentingan.map(opt => `<div>${kepentinganChecked(opt)} ${escapeHtml(opt)}</div>`).join('')}
             </div>
           </td>
         `;
@@ -158,7 +182,7 @@ const generatePDF = async (data) => {
     return `
       <tr>
         <td style="border: 1px solid black; padding: 4px; text-align: center; vertical-align: top; width: 5%; font-size: 10px;">${index + 1}.</td>
-        <td style="border: 1px solid black; padding: 4px; vertical-align: top; width: 35%; font-size: 10px; line-height: 1.2;">${q.pertanyaan}</td>
+        <td style="border: 1px solid black; padding: 4px; vertical-align: top; width: 35%; font-size: 10px; line-height: 1.2;">${escapeHtml(q.pertanyaan)}</td>
         <td style="border: 1px solid black; padding: 4px; vertical-align: top; width: ${isKepuasan ? '30%' : '60%'};">${kinerjaHtml}</td>
         ${kepentinganHtml}
       </tr>
@@ -190,7 +214,7 @@ const generatePDF = async (data) => {
   const rightQuestions = questions.slice(splitIndex);
 
   leftQuestions.forEach((q, idx) => {
-    leftHtml += renderQuestionRow(q, idx, false);
+    leftHtml += renderQuestionRow(q, idx);
   });
   leftHtml += `</table></div>`;
 
@@ -208,7 +232,7 @@ const generatePDF = async (data) => {
   `;
 
   rightQuestions.forEach((q, idx) => {
-    rightHtml += renderQuestionRow(q, splitIndex + idx, idx === 0);
+    rightHtml += renderQuestionRow(q, splitIndex + idx);
   });
   rightHtml += `</table></div>`;
 
@@ -242,12 +266,14 @@ const generatePDF = async (data) => {
     const typeLabel = isKepuasan ? 'Kepuasan' : 'Gratifikasi';
     const userName = identitas.nama ? identitas.nama.trim().replace(/\s+/g, '_') : 'Anonim';
     const fileName = `Survey_${typeLabel}_${userName}.pdf`;
-
-    pdf.save(fileName);
     const base64String = pdf.output('datauristring');
 
     document.body.removeChild(container);
-    return base64String;
+    return { 
+      base64: base64String, 
+      fileName,
+      savePdf: () => pdf.save(fileName)
+    };
   } catch (error) {
     document.body.removeChild(container);
     throw error;

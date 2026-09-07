@@ -156,48 +156,7 @@ body {
   border-color: #cbd5e1;
 }
 
-/* Forms */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: var(--color-text-main);
-}
-
-.form-input, .form-select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-family: var(--font-family);
-  transition: all 0.2s ease;
-  background-color: var(--color-surface);
-  /* Prevent zoom on focus on iOS (font-size must be >= 16px) */
-  font-size: 16px;
-}
-
-.form-input:focus, .form-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(227, 0, 34, 0.1);
-}
-
-.radio-group {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
+/* Animations */
 
 /* Animations */
 @keyframes fadeIn {
@@ -306,30 +265,6 @@ body {
   border-color: var(--color-primary);
   background-color: rgba(227, 0, 34, 0.05);
   box-shadow: 0 0 0 1px var(--color-primary);
-}
-
-.radio-custom {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #cbd5e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.option-box.selected .radio-custom {
-  border-color: var(--color-primary);
-}
-
-.option-box.selected .radio-custom::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  background: var(--color-primary);
-  border-radius: 50%;
 }
 
 /* ========== Blob Card (Landing Page) ========== */

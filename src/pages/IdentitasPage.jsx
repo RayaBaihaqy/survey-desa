@@ -13,9 +13,53 @@ const IdentitasPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getFieldProps = (field) => {
+    switch (field.id) {
+      case 'umur':
+        return { min: 10, max: 120, placeholder: 'Contoh: 35' };
+      case 'telp':
+        return {
+          pattern: '^[0-9+]{9,16}$',
+          title: 'Nomor telepon harus berupa 9-16 digit angka',
+          placeholder: 'Contoh: 081234567890'
+        };
+      case 'nama':
+        return { minLength: 2, maxLength: 100, placeholder: 'Masukkan nama lengkap' };
+      case 'alamat':
+        return { minLength: 3, maxLength: 200, placeholder: 'Masukkan alamat/dusun' };
+      case 'email':
+        return { placeholder: 'nama@email.com' };
+      default:
+        return { placeholder: `Masukkan ${field.label.toLowerCase()}` };
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem('survey_identitas', JSON.stringify(formData));
+
+    // Clean & trim all values
+    const cleanedData = {};
+    for (const key in formData) {
+      cleanedData[key] = typeof formData[key] === 'string' ? formData[key].trim() : formData[key];
+    }
+
+    if (!cleanedData.nama || cleanedData.nama.length < 2) {
+      alert('Mohon masukkan nama responden yang valid.');
+      return;
+    }
+
+    if (!cleanedData.alamat || cleanedData.alamat.length < 3) {
+      alert('Mohon masukkan alamat yang valid.');
+      return;
+    }
+
+    const umurNum = parseInt(cleanedData.umur, 10);
+    if (isNaN(umurNum) || umurNum < 10 || umurNum > 120) {
+      alert('Mohon masukkan umur yang valid (antara 10 - 120 tahun).');
+      return;
+    }
+
+    localStorage.setItem('survey_identitas', JSON.stringify(cleanedData));
     navigate(`/survey/${surveyType}`);
   };
 
@@ -40,7 +84,7 @@ const IdentitasPage = () => {
                   required
                   onChange={handleChange}
                   value={formData[field.id] || ''}
-                  placeholder={`Masukkan ${field.label.toLowerCase()}`}
+                  {...getFieldProps(field)}
                 />
               ) : field.type === 'select' ? (
                 <select

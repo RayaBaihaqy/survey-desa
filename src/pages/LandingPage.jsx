@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { SURVEY_TYPES } from '../data/questions';
-import { FileText, ShieldAlert } from 'lucide-react';
+import { ClipboardCheck, ShieldCheck } from 'lucide-react';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const LandingPage = () => {
           <div className="bg"></div>
           <div className="blob"></div>
           <div className="content">
-            <FileText size={48} color="var(--color-primary)" />
+            <ClipboardCheck size={48} color="var(--color-primary)" />
             <p className="blob-card-title">Kuesioner Survey Kepuasan Masyarakat Pelayanan Umum Desa Ngampel Wetan Kecamatan Ngampel</p>
           </div>
         </div>
@@ -32,7 +32,7 @@ const LandingPage = () => {
           <div className="bg"></div>
           <div className="blob"></div>
           <div className="content">
-            <ShieldAlert size={48} color="var(--color-primary)" />
+            <ShieldCheck size={48} color="var(--color-primary)" />
             <p className="blob-card-title">Kuesioner Survey Perilaku Masyarakat Terhadap Gratifikasi Desa Ngampel Wetan Kecamatan Ngampel</p>
           </div>
         </div>

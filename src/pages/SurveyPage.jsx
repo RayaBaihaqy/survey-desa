@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SURVEY_TYPES, KEPUASAN_QUESTIONS, GRATIFIKASI_QUESTIONS } from '../data/questions';
 import { ArrowLeft, Send } from 'lucide-react';
-import generatePDF from '../utils/pdfGenerator';
 
 const SurveyPage = () => {
   const { surveyType } = useParams();
@@ -55,21 +54,40 @@ const SurveyPage = () => {
         surveyType
       };
 
-      // Generate PDF Base64
-      const pdfBase64 = await generatePDF(data);
+      // Lazy-load PDF generator to keep initial bundle size lean
+      const { default: generatePDF } = await import('../utils/pdfGenerator');
+      const { base64, fileName, savePdf } = await generatePDF(data);
 
-      // We will send this to Google Apps Script later. For now, simulate network delay
-      // then redirect to success
-      
-      // Simulating a backend call:
-      // await fetch('GOOGLE_APPS_SCRIPT_URL', { method: 'POST', body: JSON.stringify({ pdf: pdfBase64, type: surveyType }) });
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const gasUrl = import.meta.env.VITE_GAS_API_URL;
+      if (gasUrl) {
+        const response = await fetch(gasUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            pdfBase64: base64,
+            fileName: fileName,
+            surveyType,
+            identitas
+          })
+        });
+
+        const result = await response.json();
+        if (result.status !== 'success') {
+          throw new Error(result.message || 'Gagal menyimpan file ke Google Drive.');
+        }
+      }
+
+      if (savePdf) {
+        savePdf();
+      }
       
       localStorage.removeItem('survey_identitas');
       navigate('/success', { state: { completedSurvey: surveyType, identitas } });
     } catch (error) {
       console.error('Error submitting survey:', error);
-      alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
+      alert(error.message || 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
     } finally {
       setIsSubmitting(false);
     }
