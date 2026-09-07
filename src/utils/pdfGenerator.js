@@ -266,7 +266,8 @@ const generatePDF = async (data) => {
     const typeLabel = isKepuasan ? 'Kepuasan' : 'Gratifikasi';
     const userName = identitas.nama ? identitas.nama.trim().replace(/\s+/g, '_') : 'Anonim';
     const fileName = `Survey_${typeLabel}_${userName}.pdf`;
-    const base64String = pdf.output('datauristring');
+    const rawDataUri = pdf.output('datauristring');
+    const base64String = rawDataUri.includes(',') ? rawDataUri.split(',')[1] : rawDataUri;
 
     document.body.removeChild(container);
     return { 
