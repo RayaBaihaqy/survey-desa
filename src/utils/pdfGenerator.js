@@ -272,8 +272,7 @@ const generatePDF = async (data) => {
     document.body.removeChild(container);
     return { 
       base64: base64String, 
-      fileName,
-      savePdf: () => pdf.save(fileName)
+      fileName
     };
   } catch (error) {
     document.body.removeChild(container);

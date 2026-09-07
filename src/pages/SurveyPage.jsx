@@ -56,7 +56,7 @@ const SurveyPage = () => {
 
       // Lazy-load PDF generator to keep initial bundle size lean
       const { default: generatePDF } = await import('../utils/pdfGenerator');
-      const { base64, fileName, savePdf } = await generatePDF(data);
+      const { base64, fileName } = await generatePDF(data);
 
       const gasUrl = import.meta.env.VITE_GAS_API_URL;
       if (gasUrl) {
@@ -77,10 +77,6 @@ const SurveyPage = () => {
         if (result.status !== 'success') {
           throw new Error(result.message || 'Gagal menyimpan file ke Google Drive.');
         }
-      }
-
-      if (savePdf) {
-        savePdf();
       }
       
       localStorage.removeItem('survey_identitas');
